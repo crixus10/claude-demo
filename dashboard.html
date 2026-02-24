@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invoice Dashboard 2025</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;padding:32px}
+  h1{font-size:1.6rem;font-weight:700;margin-bottom:4px;letter-spacing:-.5px}
+  .subtitle{color:#7d8590;font-size:.9rem;margin-bottom:28px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .kpi{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px 24px}
+  .kpi-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#7d8590;margin-bottom:8px}
+  .kpi-value{font-size:1.9rem;font-weight:700;letter-spacing:-1px}
+  .kpi-value.green{color:#3fb950}
+  .kpi-value.blue{color:#58a6ff}
+  .kpi-value.purple{color:#a371f7}
+  .kpi-value.orange{color:#d29922}
+  .kpi-sub{font-size:.75rem;color:#7d8590;margin-top:4px}
+  .charts-row{display:grid;grid-template-columns:2fr 1.4fr;gap:16px;margin-bottom:28px}
+  .chart-row-3{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px}
+  .card h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:#7d8590;margin-bottom:20px}
+  canvas{max-height:320px}
+</style>
+</head>
+<body>
+<h1>Invoice Dashboard</h1>
+<p class="subtitle">Fiscal Year 2025 &nbsp;·&nbsp; 21 invoices processed</p>
+
+<div class="kpi-grid">
+  <div class="kpi">
+    <div class="kpi-label">Total Revenue</div>
+    <div class="kpi-value blue">$169,413.40</div>
+    <div class="kpi-sub">All invoices incl. tax</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Total Expenses</div>
+    <div class="kpi-value orange">$155,565.00</div>
+    <div class="kpi-sub">Pre-tax subtotals</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Net Profit</div>
+    <div class="kpi-value green">$13,848.40</div>
+    <div class="kpi-sub">Revenue minus expenses</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Tax Collected</div>
+    <div class="kpi-value purple">$13,848.40</div>
+    <div class="kpi-sub">Total GST / sales tax</div>
+  </div>
+</div>
+
+<div class="charts-row">
+  <div class="card">
+    <h2>Revenue by Month</h2>
+    <canvas id="monthChart"></canvas>
+  </div>
+  <div class="card">
+    <h2>Expense by Category</h2>
+    <canvas id="catChart"></canvas>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Top 10 Clients by Invoice Value</h2>
+  <canvas id="clientChart" style="max-height:280px"></canvas>
+</div>
+
+<script>
+const chartDefaults = {
+  color: '#e6edf3',
+  plugins:{ legend:{ labels:{ color:'#7d8590', font:{ size:12 } } } },
+};
+Chart.defaults.color = '#7d8590';
+
+// Revenue by Month
+new Chart(document.getElementById('monthChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    datasets: [{
+      label: 'Revenue',
+      data: [11415.2, 19228.4, 25404.0, 12960.8, 37837.0, 57233.0, 5335.0],
+      backgroundColor: '#6366f1',
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive:true,
+    plugins:{ legend:{ display:false } },
+    scales:{
+      x:{ grid:{ color:'#21262d' }, ticks:{ color:'#7d8590' } },
+      y:{ grid:{ color:'#21262d' }, ticks:{ color:'#7d8590', callback: v => '$' + (v/1000).toFixed(0)+'k' } }
+    }
+  }
+});
+
+// Category donut
+new Chart(document.getElementById('catChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ["Trade Services", "IT / Technology", "Construction / Engineering", "Energy / Solar", "Marketing / Creative", "Professional Services", "Fitness / Wellness", "Events / Hospitality"],
+    datasets: [{
+      data: [10930.4, 15609.0, 49499.5, 42570.0, 20713.0, 14205.0, 4202.0, 11684.5],
+      backgroundColor: ["#6366f1", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#14b8a6"],
+      borderWidth: 0,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive:true,
+    cutout:'65%',
+    plugins:{
+      legend:{ position:'right', labels:{ color:'#7d8590', font:{ size:11 }, boxWidth:12 } }
+    }
+  }
+});
+
+// Top 10 clients
+new Chart(document.getElementById('clientChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Zenith Solar Installations", "SteelFrame Construction", "DataBridge Analytics", "Ironclad Security Solutions", "Aurora Event Productions", "TerraFirm Civil Engineering", "Luminary PR Agency", "Strata Legal Services", "Blueprint Architecture Group", "Momentum HR Consulting"],
+    datasets: [{
+      label: 'Invoice Total',
+      data: [42570.0, 25063.5, 11550.0, 10406.0, 8571.5, 8200.0, 7480.0, 5900.0, 5830.0, 5335.0],
+      backgroundColor: ["#6366f1", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#14b8a6"],
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive:true,
+    plugins:{ legend:{ display:false } },
+    scales:{
+      x:{ grid:{ color:'#21262d' }, ticks:{ color:'#7d8590', callback: v => '$' + (v/1000).toFixed(0)+'k' } },
+      y:{ grid:{ display:false }, ticks:{ color:'#e6edf3', font:{ size:12 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>
