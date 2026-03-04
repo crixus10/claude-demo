@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem 
+            id="invoice_processor_menu_root" 
+            name="Invoice Processor"
+            sequence="50"/>
+        
+        <menuitem 
+            id="invoice_processor_menu_main" 
+            name="Invoices"
+            parent="invoice_processor_menu_root"
+            action="invoice_processor_action"
+            sequence="10"/>
+        
+        <menuitem 
+            id="invoice_processor_menu_settings" 
+            name="Settings"
+            parent="invoice_processor_menu_root"
+            sequence="20"/>
+    </data>
+</odoo>

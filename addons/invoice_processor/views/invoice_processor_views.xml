@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record id="invoice_processor_tree" model="ir.ui.view">
+            <field name="name">Invoice Processor Tree</field>
+            <field name="model">invoice.processor</field>
+            <field name="arch" type="xml">
+                <tree string="Invoice Processors">
+                    <field name="invoice_name"/>
+                    <field name="invoice_number"/>
+                    <field name="vendor_id"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="invoice_processor_form" model="ir.ui.view">
+            <field name="name">Invoice Processor Form</field>
+            <field name="model">invoice.processor</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Processor">
+                    <header>
+                        <button name="process_invoice" type="object" string="Process with Claude" class="btn-primary" states="draft"/>
+                        <button name="create_bill" type="object" string="Create Bill" class="btn-success" states="processed"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="invoice_name"/>
+                                <field name="pdf_filename"/>
+                                <field name="pdf_file" widget="binary" filename="pdf_filename"/>
+                            </group>
+                            <group>
+                                <field name="vendor_id"/>
+                                <field name="state"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Extracted Data">
+                                <group>
+                                    <group>
+                                        <field name="invoice_number"/>
+                                        <field name="invoice_date"/>
+                                        <field name="due_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="amount"/>
+                                        <field name="currency_id"/>
+                                    </group>
+                                </group>
+                                <field name="description"/>
+                            </page>
+                            
+                            <page string="Processing Log">
+                                <field name="processing_log" widget="html"/>
+                            </page>
+                            
+                            <page string="Created Bill" attrs="{'invisible': [('created_bill_id', '=', False)]}">
+                                <field name="created_bill_id"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="invoice_processor_search" model="ir.ui.view">
+            <field name="name">Invoice Processor Search</field>
+            <field name="model">invoice.processor</field>
+            <field name="arch" type="xml">
+                <search string="Invoice Processor">
+                    <field name="invoice_name"/>
+                    <field name="vendor_id"/>
+                    <field name="invoice_number"/>
+                    <filter name="filter_processed" string="Processed" domain="[('state', '=', 'processed')]"/>
+                    <filter name="filter_error" string="Errors" domain="[('state', '=', 'error')]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="invoice_processor_action" model="ir.actions.act_window">
+            <field name="name">Invoice Processors</field>
+            <field name="res_model">invoice.processor</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
